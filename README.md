@@ -19,4 +19,4 @@
 - JavaScript (Canvas)
 
 ## Автор
-[Ваше имя]
+Pavel Volkov
