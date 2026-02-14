@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Полный калькулятор спусков</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .panel {
+            padding: 20px;
+        }
+        .panel-left {
+            border-right: 2px dashed #e0e0e0;
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        .input-section {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .unit {
+            display: flex;
+            align-items: center;
+        }
+        .unit input {
+            flex: 1;
+            border-radius: 8px 0 0 8px;
+        }
+        .unit span {
+            background: #667eea;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            font-weight: bold;
+        }
+        .presets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .preset-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .preset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+        .results {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8eaff 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            margin: 20px 0;
+        }
+        .angle-display {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff5722;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .dimension-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .dimension-table th, .dimension-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .dimension-table th {
+            background: #f0f0f0;
+            color: #555;
+        }
+        .visualization-container {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+        canvas {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .scale-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .scale-btn {
+            background: #9C27B0;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .scale-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        .info-box {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔪 КАЛЬКУЛЯТОР ГЕОМЕТРИИ КЛИНКА</h1>
+    
+    <div class="container">
+        <!-- ЛЕВАЯ ПАНЕЛЬ: Параметры и расчёты -->
+        <div class="panel panel-left">
+            <h2>📐 ПАРАМЕТРЫ КЛИНКА</h2>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <label>Общая ширина клинка (L):</label>
+                    <div class="unit">
+                        <input type="number" id="bladeLength" value="100" min="30" max="300" step="1">
+                        <span>мм</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Ширина спуска от обуха (B):</label>
+                    <div class="unit">
+                        <input type="number" id="bevelLength" value="15" min="5" max="100" step="0.5">
+                        <span>мм</span>
+                    </div>
+                    <small style="color:#666;">Расстояние от обуха до начала подводов</small>
+                </div>
+                
+                <div class="input-group">
+                    <label>Толщина обуха (T):</label>
+                    <div class="unit">
+                        <input type="number" id="thickness" value="2.0" min="0.5" max="10" step="0.1">
+                        <span>мм</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Толщина перед подводами (E):</label>
+                    <div class="unit">
+                        <input type="number" id="edge" value="0.3" min="0.1" max="2" step="0.05">
+                        <span>мм</span>
+                    </div>
+                    <small style="color:#666;">Толщина в самом узком месте спуска</small>
+                </div>
+                
+                <div class="input-group">
+                    <label>Угол подводов (β):</label>
+                    <div class="unit">
+                        <input type="number" id="microBevelAngle" value="20" min="5" max="40" step="0.5">
+                        <span>°</span>
+                    </div>
+                    <small style="color:#666;">Угол заточки режущей кромки</small>
+                </div>
+            </div>
+            
+            <div class="results">
+                <h2>📊 РЕЗУЛЬТАТЫ РАСЧЁТА</h2>
+                
+                <table class="dimension-table">
+                    <tbody>
+                        <tr>
+                            <th>Параметр</th>
+                            <th>Значение</th>
+                            <th>Описание</th>
+                        </tr>
+                        <tr>
+                            <td>Основной угол спуска (α)</td>
+                            <td><span id="alphaValue" style="font-weight:bold;">3.24</span>°</td>
+                            <td>Угол от обуха до подводов</td>
+                        </tr>
+                        <tr>
+                            <td>Фактическая ширина спуска</td>
+                            <td><span id="actualWidth" style="font-weight:bold;">15.0</span> мм</td>
+                            <td>Реальная ширина по плоскости</td>
+                        </tr>
+                        <tr>
+                            <td>Высота спуска</td>
+                            <td><span id="heightValue" style="font-weight:bold;">0.85</span> мм</td>
+                            <td>Перепад высоты от обуха</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="angle-display">
+                    α = <span id="alphaDisplay">3.24</span>°
+                </div>
+                <div style="text-align:center; color:#2196F3; font-size:20px; font-weight:bold;">
+                    β = <span id="betaDisplay">20.0</span>° (подводы)
+                </div>
+            </div>
+            
+            <div class="info-box">
+                💡 <strong>Совет:</strong> Для кухонных ножей α = 3-5°, для охотничьих 6-8°.
+                ширина спуска обычно 1/4 - 1/3 от ширины клинка.
+            </div>
+        </div>
+        
+        <!-- ПРАВАЯ ПАНЕЛЬ: Визуализация -->
+        <div class="panel">
+            <h2>🎨 ВИЗУАЛИЗАЦИЯ ПРОФИЛЯ</h2>
+            
+            <div class="scale-controls">
+                <button class="scale-btn" onclick="changeScale(1.5)">🔍 Увеличить</button>
+                <button class="scale-btn" onclick="changeScale(0.67)">🔎 Уменьшить</button>
+            </div>
+            
+            <div class="visualization-container">
+                <canvas id="profileCanvas" width="400" height="350"></canvas>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#667eea;"></div>
+                    <span>Спуск (основной)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#ff5722;"></div>
+                    <span>Угол α</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#2196F3;"></div>
+                    <span>Подводы (β)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#4CAF50;"></div>
+                    <span>Пятка клинка</span>
+                </div>
+            </div>
+            
+            <div style="margin-top:20px; text-align:center;">
+                <p><strong>Масштаб:</strong> 1 пиксель = <span id="scaleValue">0.13</span> мм</p>
+                <p><strong>Ширина клинка:</strong> <span id="bladeLengthDisplay">100</span> мм</p>
+                <p><strong>Ширина спуска:</strong> <span id="bevelLengthDisplay">15</span> мм (<span id="bevelPercent">15.0</span>% клинка)</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+        let canvas, ctx;
+        let scale = 8; // пикселей на мм
+        let bladeLength = 100;
+        let bevelLength = 15;
+        
+        // ========== ПРЕСЕТЫ ==========
+        const presets = {
+            kitchen: {
+                bladeLength: 100,
+                bevelLength: 20,
+                thickness: 2.0,
+                edge: 0.3,
+                microBevelAngle: 20
+            },
+            hunting: {
+                bladeLength: 120,
+                bevelLength: 25,
+                thickness: 3.0,
+                edge: 0.6,
+                microBevelAngle: 25
+            },
+            edc: {
+                bladeLength: 80,
+                bevelLength: 12,
+                thickness: 2.5,
+                edge: 0.4,
+                microBevelAngle: 22
+            }
+        };
+        
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        function init() {
+            canvas = document.getElementById('profileCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Автоматический пересчёт при изменении параметров
+            document.getElementById('bladeLength').addEventListener('input', calculateAll);
+            document.getElementById('bevelLength').addEventListener('input', calculateAll);
+            document.getElementById('thickness').addEventListener('input', calculateAll);
+            document.getElementById('edge').addEventListener('input', calculateAll);
+            document.getElementById('microBevelAngle').addEventListener('input', calculateAll);
+            
+            // Первоначальный расчёт
+            calculateAll();
+        }
+        
+        // ========== ЗАГРУЗКА ПРЕСЕТА ==========
+        function loadPreset(presetName) {
+            const preset = presets[presetName];
+            if (!preset) return;
+            
+            document.getElementById('bladeLength').value = preset.bladeLength;
+            document.getElementById('bevelLength').value = preset.bevelLength;
+            document.getElementById('thickness').value = preset.thickness;
+            document.getElementById('edge').value = preset.edge;
+            document.getElementById('microBevelAngle').value = preset.microBevelAngle;
+            
+            document.getElementById('bladeLength').dispatchEvent(new Event('input'));
+        }
+        
+        // ========== ОСНОВНОЙ РАСЧЁТ ==========
+        function calculateAll() {
+            // Получаем значения
+            bladeLength = parseFloat(document.getElementById('bladeLength').value);
+            bevelLength = parseFloat(document.getElementById('bevelLength').value);
+            const thickness = parseFloat(document.getElementById('thickness').value);
+            const edge = parseFloat(document.getElementById('edge').value);
+            const microBevelAngle = parseFloat(document.getElementById('microBevelAngle').value);
+            
+            // Проверка корректности
+            if (bevelLength > bladeLength) {
+                bevelLength = bladeLength;
+                document.getElementById('bevelLength').value = bladeLength;
+            }
+            
+            // Расчёт основного угла спуска (α)
+            const alpha = Math.atan((thickness - edge) / (2 * bevelLength)) * (180 / Math.PI);
+            
+            // Расчёт фактической ширины спуска (гипотенуза)
+            const actualWidth = bevelLength / Math.cos(alpha * Math.PI / 180);
+            
+            // Расчёт высоты спуска
+            const height = bevelLength * Math.tan(alpha * Math.PI / 180);
+            
+            // Доля клинка со спуском
+            const bladeRatio = (bevelLength / bladeLength * 100).toFixed(1);
+            
+            // Обновление интерфейса
+            document.getElementById('alphaValue').textContent = alpha.toFixed(2);
+            document.getElementById('actualWidth').textContent = actualWidth.toFixed(1);
+            document.getElementById('heightValue').textContent = height.toFixed(2);
+            
+            document.getElementById('alphaDisplay').textContent = alpha.toFixed(2);
+            document.getElementById('betaDisplay').textContent = microBevelAngle.toFixed(1);
+            
+            document.getElementById('bladeLengthDisplay').textContent = bladeLength;
+            document.getElementById('bevelLengthDisplay').textContent = bevelLength;
+            document.getElementById('bevelPercent').textContent = bladeRatio;
+            
+            // Визуализация
+            drawProfile(thickness, edge, alpha, microBevelAngle);
+        }
+        
+        // ========== ВИЗУАЛИЗАЦИЯ ==========
+        function drawProfile(thickness, edge, alpha, beta) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawSideView(thickness, edge, alpha, beta);
+            
+            // Обновление информации о масштабе
+            document.getElementById('scaleValue').textContent = (1/scale).toFixed(2);
+        }
+        
+        function drawSideView(thickness, edge, alpha, beta) {
+            const centerX = canvas.width / 2;
+            const baseY = canvas.height - 60;
+            
+            // Адаптивный масштаб
+            const maxDim = Math.max(thickness, bevelLength);
+            const adaptiveScale = Math.min(scale, 150 / maxDim);
+            
+            // ширина обуха (без спуска)
+            const spineLength = bladeLength - bevelLength;
+            const spineScale = adaptiveScale * 0.5;
+            
+            // Координаты для спуска
+            const bevelPoints = [
+                { x: centerX - thickness/2 * adaptiveScale, y: baseY - bevelLength * adaptiveScale },
+                { x: centerX + thickness/2 * adaptiveScale, y: baseY - bevelLength * adaptiveScale },
+                { x: centerX + edge/2 * adaptiveScale, y: baseY },
+                { x: centerX - edge/2 * adaptiveScale, y: baseY }
+            ];
+            
+            // Обух (зелёная область)
+            const spineHeight = spineLength * spineScale;
+            ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
+            ctx.fillRect(
+                centerX - thickness/2 * adaptiveScale,
+                baseY - bevelLength * adaptiveScale - spineHeight,
+                thickness * adaptiveScale,
+                spineHeight
+            );
+            
+            // Контур обуха
+            ctx.strokeStyle = '#4CAF50';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(
+                centerX - thickness/2 * adaptiveScale,
+                baseY - bevelLength * adaptiveScale - spineHeight,
+                thickness * adaptiveScale,
+                spineHeight
+            );
+            
+            // Спуски (голубая область)
+            ctx.beginPath();
+            ctx.moveTo(bevelPoints[0].x, bevelPoints[0].y);
+            ctx.lineTo(bevelPoints[1].x, bevelPoints[1].y);
+            ctx.lineTo(bevelPoints[2].x, bevelPoints[2].y);
+            ctx.lineTo(bevelPoints[3].x, bevelPoints[3].y);
+            ctx.closePath();
+            
+            const gradient = ctx.createLinearGradient(0, bevelPoints[0].y, 0, baseY);
+            gradient.addColorStop(0, 'rgba(102, 126, 234, 0.2)');
+            gradient.addColorStop(1, 'rgba(102, 126, 234, 0.5)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Подводы (синие треугольники)
+            const microBevelLength = edge / (2 * Math.tan(beta * Math.PI / 180));
+            ctx.fillStyle = 'rgba(33, 150, 243, 0.4)';
+            
+            // Левый подвод
+            ctx.beginPath();
+            ctx.moveTo(bevelPoints[3].x, bevelPoints[3].y);
+            ctx.lineTo(bevelPoints[3].x - microBevelLength * adaptiveScale, bevelPoints[3].y);
+            ctx.lineTo(bevelPoints[3].x, bevelPoints[3].y - edge/2 * adaptiveScale);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Правый подвод
+            ctx.beginPath();
+            ctx.moveTo(bevelPoints[2].x, bevelPoints[2].y);
+            ctx.lineTo(bevelPoints[2].x + microBevelLength * adaptiveScale, bevelPoints[2].y);
+            ctx.lineTo(bevelPoints[2].x, bevelPoints[2].y - edge/2 * adaptiveScale);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Углы α (оранжевые дуги)
+            drawAngle(bevelPoints[0], bevelPoints[3], alpha, '#ff5722', 'α');
+            drawAngle(bevelPoints[1], bevelPoints[2], alpha, '#ff5722', '');
+            
+            // Подписи размеров
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            
+            // ширина спуска
+            ctx.save();
+            ctx.translate(bevelPoints[0].x - 30, (bevelPoints[0].y + bevelPoints[3].y) / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(`${bevelLength} мм`, 0, 0);
+            ctx.restore();
+            
+            // ширина обуха
+            ctx.save();
+            ctx.translate(bevelPoints[0].x - 30, (bevelPoints[0].y + bevelPoints[0].y - spineHeight) / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(`${spineLength} мм`, 0, 0);
+            ctx.restore();
+            
+            // Толщина обуха
+            ctx.fillText(`${thickness.toFixed(1)} мм`, centerX, bevelPoints[0].y - spineHeight - 10);
+            
+            // Общая ширина
+            ctx.fillText(`Общая ширина: ${bladeLength} мм`, centerX, canvas.height - 10);
+            
+            // Разделительная линия (обух/спуск)
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 3]);
+            ctx.beginPath();
+            ctx.moveTo(centerX - thickness/2 * adaptiveScale - 10, bevelPoints[0].y);
+            ctx.lineTo(centerX + thickness/2 * adaptiveScale + 10, bevelPoints[0].y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Подпись разделителя
+            ctx.fillStyle = '#666';
+            ctx.font = '10px Arial';
+            ctx.fillText('начало спуска', centerX, bevelPoints[0].y - 5);
+        }
+        
+        function drawAngle(point1, point2, angle, color, label) {
+            const radius = 35;
+            const centerX = point2.x;
+            const centerY = point2.y;
+            
+            // Вычисляем начальный угол
+            const dx = point1.x - point2.x;
+            const dy = point1.y - point2.y;
+            const startAngle = Math.atan2(dy, dx);
+            
+            // Дуга
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, startAngle, startAngle + angle * Math.PI / 180);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Подпись
+            if (label) {
+                const midAngle = startAngle + (angle * Math.PI / 180) / 2;
+                const labelX = centerX + (radius + 15) * Math.cos(midAngle);
+                const labelY = centerY + (radius + 15) * Math.sin(midAngle);
+                
+                ctx.fillStyle = color;
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`${label} = ${angle.toFixed(1)}°`, labelX, labelY);
+            }
+        }
+        
+        // ========== УПРАВЛЕНИЕ ==========
+        function changeScale(factor) {
+            scale *= factor;
+            scale = Math.max(3, Math.min(30, scale));
+            calculateAll();
+        }
+        
+        // Запуск при загрузке
+        window.onload = init;
+    </script>
+</body>
+</html>
