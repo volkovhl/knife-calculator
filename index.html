@@ -1,198 +1,488 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Полный калькулятор спусков</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    
+    <!-- Основные SEO-теги для России -->
+    <title>Калькулятор спусков ножа онлайн — геометрия клинка для ножеделов</title>
+    <meta name="description" content="Бесплатный калькулятор спусков ножа: точный расчёт угла спуска α, ширины/высоты спуска и подводов β. Визуализация профиля. Для кухонных, охотничьих и handmade ножей. Без регистрации.">
+    <meta name="keywords" content="калькулятор спусков ножа, геометрия клинка, угол спуска, подводы ножа, расчёт ножа, ножеделие, handmade нож, угол заточки, спуски ножа">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Павел Волков">
+    <meta name="yandex-verification" content="ваш_код_верификации"> <!-- Для Яндекс.Вебмастера -->
+    
+    <!-- Только российские соцсети и мессенджеры -->
+    <meta property="og:title" content="Калькулятор спусков ножа — расчёт α/β + визуализация профиля">
+    <meta property="og:description" content="Точный расчёт угла спуска, ширины, высоты и подводов. Визуализация профиля клинка. Бесплатно для ножеделов.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://volkovhl.github.io/knife-calculator/">
+    <meta property="og:site_name" content="Калькулятор спусков ножа">
+    <meta property="og:image" content="https://volkovhl.github.io/knife-calculator/screenshot-knife.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="ru_RU">
+    
+    <!-- VK Donut / VK Video -->
+    <meta property="vk:image" content="https://volkovhl.github.io/knife-calculator/screenshot-knife.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔪</text></svg>">
+    
     <style>
+        /* Стили с улучшенной мобильной версией */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 10px;
+            margin: 0;
         }
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        }
+        
         h1 {
             color: white;
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 32px;
+            margin: 15px 0 20px 0;
+            font-size: clamp(20px, 6vw, 32px);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            padding: 0 10px;
+            word-break: break-word;
         }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr; /* По умолчанию одна колонка на мобильных */
+            gap: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        /* Для планшетов и выше */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .container {
+                grid-template-columns: 1fr 1fr;
+                padding: 25px;
+            }
+            
+            h1 {
+                margin: 20px 0 30px 0;
+                font-size: 32px;
+            }
+        }
+        
         .panel {
-            padding: 20px;
+            padding: 0;
+            width: 100%;
         }
+        
         .panel-left {
-            border-right: 2px dashed #e0e0e0;
+            border-right: none;
         }
+        
+        @media (min-width: 768px) {
+            .panel {
+                padding: 20px;
+            }
+            
+            .panel-left {
+                border-right: 2px dashed #e0e0e0;
+            }
+        }
+        
         h2 {
             color: #333;
-            margin-top: 0;
+            margin: 0 0 15px 0;
             padding-bottom: 10px;
             border-bottom: 3px solid #667eea;
+            font-size: clamp(18px, 4vw, 24px);
         }
+        
         .input-section {
             background: #f8f9ff;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
         }
+        
+        @media (min-width: 768px) {
+            .input-section {
+                padding: 20px;
+                margin-bottom: 25px;
+            }
+        }
+        
         .input-group {
-            margin: 15px 0;
+            margin: 12px 0;
         }
+        
+        @media (min-width: 768px) {
+            .input-group {
+                margin: 15px 0;
+            }
+        }
+        
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
             color: #444;
+            font-size: 14px;
         }
-        input, select {
+        
+        @media (min-width: 768px) {
+            label {
+                font-size: 16px;
+                margin-bottom: 8px;
+            }
+        }
+        
+        input {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
             transition: all 0.3s;
+            -webkit-appearance: none;
+            appearance: none;
         }
-        input:focus, select:focus {
+        
+        input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
+        
         .unit {
             display: flex;
             align-items: center;
+            width: 100%;
         }
+        
         .unit input {
             flex: 1;
             border-radius: 8px 0 0 8px;
+            min-width: 0; /* Предотвращает переполнение на мобильных */
         }
+        
         .unit span {
             background: #667eea;
             color: white;
-            padding: 12px 15px;
+            padding: 12px 12px;
             border-radius: 0 8px 8px 0;
             font-weight: bold;
+            font-size: 14px;
+            white-space: nowrap;
         }
+        
+        @media (min-width: 768px) {
+            .unit span {
+                padding: 12px 15px;
+                font-size: 16px;
+            }
+        }
+        
         .presets {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 20px 0;
+            gap: 8px;
+            margin: 15px 0;
         }
+        
+        @media (min-width: 768px) {
+            .presets {
+                gap: 10px;
+                margin: 20px 0;
+            }
+        }
+        
         .preset-btn {
             background: #2196F3;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 10px 5px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
         }
+        
+        @media (min-width: 768px) {
+            .preset-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+        
+        .preset-btn:active {
+            transform: scale(0.95);
+            opacity: 0.9;
+        }
+        
         .preset-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
         }
+        
         .results {
             background: linear-gradient(135deg, #f8f9ff 0%, #e8eaff 100%);
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 5px solid #667eea;
-            margin: 20px 0;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            margin: 15px 0;
         }
+        
+        @media (min-width: 768px) {
+            .results {
+                padding: 20px;
+                border-left: 5px solid #667eea;
+                margin: 20px 0;
+            }
+        }
+        
         .angle-display {
-            font-size: 28px;
+            font-size: clamp(22px, 6vw, 28px);
             font-weight: bold;
             color: #ff5722;
             text-align: center;
             margin: 10px 0;
         }
+        
         .dimension-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
+            margin: 10px 0;
+            font-size: 14px;
         }
-        .dimension-table th, .dimension-table td {
-            padding: 10px;
+        
+        @media (min-width: 768px) {
+            .dimension-table {
+                margin: 15px 0;
+                font-size: 16px;
+            }
+        }
+        
+        .dimension-table th,
+        .dimension-table td {
+            padding: 8px 5px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+        
+        @media (min-width: 768px) {
+            .dimension-table th,
+            .dimension-table td {
+                padding: 10px;
+            }
+        }
+        
         .dimension-table th {
             background: #f0f0f0;
             color: #555;
+            font-size: 13px;
         }
+        
+        @media (min-width: 768px) {
+            .dimension-table th {
+                font-size: 14px;
+            }
+        }
+        
+        .dimension-table td:nth-child(2) {
+            font-weight: bold;
+            color: #333;
+        }
+        
         .visualization-container {
             text-align: center;
-            padding: 15px;
+            padding: 10px;
             background: #f8f9ff;
-            border-radius: 10px;
+            border-radius: 12px;
+            margin: 10px 0;
         }
+        
+        @media (min-width: 768px) {
+            .visualization-container {
+                padding: 15px;
+            }
+        }
+        
         canvas {
+            width: 100%;
+            height: auto;
+            max-width: 400px;
             border: 2px solid #ddd;
             border-radius: 10px;
             background: white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            touch-action: none; /* Предотвращает прокрутку при касании канваса */
         }
+        
         .scale-controls {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin: 15px 0;
+            flex-wrap: wrap;
         }
+        
         .scale-btn {
             background: #9C27B0;
             color: white;
-            padding: 8px 15px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 16px;
+            transition: all 0.2s;
+            min-width: 120px;
+            -webkit-tap-highlight-color: transparent;
         }
-        .scale-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+        
+        @media (max-width: 767px) {
+            .scale-btn {
+                flex: 1;
+                min-width: 0;
+                padding: 12px 10px;
+                font-size: 15px;
+            }
         }
+        
+        .scale-btn:active {
+            transform: scale(0.95);
+            opacity: 0.9;
+        }
+        
         .legend {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 12px;
             margin: 15px 0;
             flex-wrap: wrap;
+            font-size: 13px;
         }
+        
+        @media (min-width: 768px) {
+            .legend {
+                gap: 20px;
+                font-size: 14px;
+            }
+        }
+        
         .legend-item {
             display: flex;
             align-items: center;
             gap: 5px;
+            background: rgba(255,255,255,0.8);
+            padding: 5px 10px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        
         .legend-color {
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             border-radius: 3px;
         }
+        
+        @media (min-width: 768px) {
+            .legend-color {
+                width: 20px;
+                height: 20px;
+            }
+        }
+        
         .info-box {
             background: #e8f5e9;
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
-            margin-top: 20px;
-            font-size: 14px;
+            margin: 15px 0 0 0;
+            font-size: 13px;
             color: #2e7d32;
+            line-height: 1.4;
+        }
+        
+        @media (min-width: 768px) {
+            .info-box {
+                padding: 15px;
+                font-size: 14px;
+            }
+        }
+        
+        .stats-mobile {
+            display: flex;
+            justify-content: space-between;
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        @media (min-width: 768px) {
+            .stats-mobile {
+                display: none; /* Скрываем на десктопе */
+            }
+        }
+        
+        .stats-mobile-item {
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .stats-mobile-value {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 16px;
+        }
+        
+        small {
+            display: block;
+            margin-top: 4px;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        /* Улучшение для touch-устройств */
+        @media (hover: none) and (pointer: coarse) {
+            input, button {
+                min-height: 44px; /* Минимальный размер для touch */
+            }
+            
+            .preset-btn, .scale-btn {
+                min-height: 44px;
+            }
+            
+            .legend-item {
+                padding: 8px 12px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>🔪 КАЛЬКУЛЯТОР ГЕОМЕТРИИ КЛИНКА</h1>
+    <h1>🔪 КАЛЬКУЛЯТОР СПУСКОВ НОЖА</h1>
     
     <div class="container">
         <!-- ЛЕВАЯ ПАНЕЛЬ: Параметры и расчёты -->
@@ -203,7 +493,7 @@
                 <div class="input-group">
                     <label>Общая ширина клинка (L):</label>
                     <div class="unit">
-                        <input type="number" id="bladeLength" value="100" min="30" max="300" step="1">
+                        <input type="number" id="bladeLength" value="100" min="30" max="300" step="1" inputmode="numeric">
                         <span>мм</span>
                     </div>
                 </div>
@@ -211,16 +501,16 @@
                 <div class="input-group">
                     <label>Ширина спуска от обуха (B):</label>
                     <div class="unit">
-                        <input type="number" id="bevelLength" value="15" min="5" max="100" step="0.5">
+                        <input type="number" id="bevelLength" value="15" min="5" max="100" step="0.5" inputmode="decimal">
                         <span>мм</span>
                     </div>
-                    <small style="color:#666;">Расстояние от обуха до начала подводов</small>
+                    <small>Расстояние от обуха до начала подводов</small>
                 </div>
                 
                 <div class="input-group">
                     <label>Толщина обуха (T):</label>
                     <div class="unit">
-                        <input type="number" id="thickness" value="2.0" min="0.5" max="10" step="0.1">
+                        <input type="number" id="thickness" value="2.0" min="0.5" max="10" step="0.1" inputmode="decimal">
                         <span>мм</span>
                     </div>
                 </div>
@@ -228,19 +518,42 @@
                 <div class="input-group">
                     <label>Толщина перед подводами (E):</label>
                     <div class="unit">
-                        <input type="number" id="edge" value="0.3" min="0.1" max="2" step="0.05">
+                        <input type="number" id="edge" value="0.3" min="0.1" max="2" step="0.05" inputmode="decimal">
                         <span>мм</span>
                     </div>
-                    <small style="color:#666;">Толщина в самом узком месте спуска</small>
+                    <small>Толщина в самом узком месте спуска</small>
                 </div>
                 
                 <div class="input-group">
                     <label>Угол подводов (β):</label>
                     <div class="unit">
-                        <input type="number" id="microBevelAngle" value="20" min="5" max="40" step="0.5">
+                        <input type="number" id="microBevelAngle" value="20" min="5" max="40" step="0.5" inputmode="decimal">
                         <span>°</span>
                     </div>
-                    <small style="color:#666;">Угол заточки режущей кромки</small>
+                    <small>Угол заточки режущей кромки</small>
+                </div>
+            </div>
+            
+            <!-- Быстрый выбор (пресеты) -->
+            <div class="presets">
+                <button class="preset-btn" onclick="loadPreset('kitchen')">🍳 Кухонный</button>
+                <button class="preset-btn" onclick="loadPreset('hunting')">🏹 Охотничий</button>
+                <button class="preset-btn" onclick="loadPreset('edc')">🔪 EDC</button>
+            </div>
+            
+            <!-- Мобильная статистика -->
+            <div class="stats-mobile">
+                <div class="stats-mobile-item">
+                    <div>Угол α</div>
+                    <div class="stats-mobile-value" id="mobileAlpha">3.24°</div>
+                </div>
+                <div class="stats-mobile-item">
+                    <div>Угол β</div>
+                    <div class="stats-mobile-value" id="mobileBeta">20.0°</div>
+                </div>
+                <div class="stats-mobile-item">
+                    <div>Высота</div>
+                    <div class="stats-mobile-value" id="mobileHeight">0.85 мм</div>
                 </div>
             </div>
             
@@ -256,17 +569,17 @@
                         </tr>
                         <tr>
                             <td>Основной угол спуска (α)</td>
-                            <td><span id="alphaValue" style="font-weight:bold;">3.24</span>°</td>
+                            <td><span id="alphaValue">3.24</span>°</td>
                             <td>Угол от обуха до подводов</td>
                         </tr>
                         <tr>
                             <td>Фактическая ширина спуска</td>
-                            <td><span id="actualWidth" style="font-weight:bold;">15.0</span> мм</td>
+                            <td><span id="actualWidth">15.0</span> мм</td>
                             <td>Реальная ширина по плоскости</td>
                         </tr>
                         <tr>
                             <td>Высота спуска</td>
-                            <td><span id="heightValue" style="font-weight:bold;">0.85</span> мм</td>
+                            <td><span id="heightValue">0.85</span> мм</td>
                             <td>Перепад высоты от обуха</td>
                         </tr>
                     </tbody>
@@ -275,14 +588,13 @@
                 <div class="angle-display">
                     α = <span id="alphaDisplay">3.24</span>°
                 </div>
-                <div style="text-align:center; color:#2196F3; font-size:20px; font-weight:bold;">
+                <div style="text-align:center; color:#2196F3; font-size:clamp(16px,4vw,20px); font-weight:bold;">
                     β = <span id="betaDisplay">20.0</span>° (подводы)
                 </div>
             </div>
             
             <div class="info-box">
-                💡 <strong>Совет:</strong> Для кухонных ножей α = 3-5°, для охотничьих 6-8°.
-                ширина спуска обычно 1/4 - 1/3 от ширины клинка.
+                💡 <strong>Совет:</strong> Для кухонных ножей α = 3-5°, для охотничьих 6-8°. Ширина спуска обычно 1/4 - 1/3 от ширины клинка.
             </div>
         </div>
         
@@ -302,7 +614,7 @@
             <div class="legend">
                 <div class="legend-item">
                     <div class="legend-color" style="background:#667eea;"></div>
-                    <span>Спуск (основной)</span>
+                    <span>Основной спуск</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background:#ff5722;"></div>
@@ -310,18 +622,17 @@
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background:#2196F3;"></div>
-                    <span>Подводы (β)</span>
+                    <span>Подводы β</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background:#4CAF50;"></div>
-                    <span>Пятка клинка</span>
+                    <span>Обух</span>
                 </div>
             </div>
             
-            <div style="margin-top:20px; text-align:center;">
+            <div style="margin-top:15px; text-align:center; font-size:14px;">
                 <p><strong>Масштаб:</strong> 1 пиксель = <span id="scaleValue">0.13</span> мм</p>
-                <p><strong>Ширина клинка:</strong> <span id="bladeLengthDisplay">100</span> мм</p>
-                <p><strong>Ширина спуска:</strong> <span id="bevelLengthDisplay">15</span> мм (<span id="bevelPercent">15.0</span>% клинка)</p>
+                <p><strong>Ширина клинка:</strong> <span id="bladeLengthDisplay">100</span> мм | <strong>Спуск:</strong> <span id="bevelLengthDisplay">15</span> мм (<span id="bevelPercent">15.0</span>%)</p>
             </div>
         </div>
     </div>
@@ -336,21 +647,21 @@
         // ========== ПРЕСЕТЫ ==========
         const presets = {
             kitchen: {
-                bladeLength: 100,
-                bevelLength: 20,
+                bladeLength: 30,
+                bevelLength: 25,
                 thickness: 2.0,
                 edge: 0.3,
                 microBevelAngle: 20
             },
             hunting: {
-                bladeLength: 120,
-                bevelLength: 25,
+                bladeLength: 35,
+                bevelLength: 20,
                 thickness: 3.0,
                 edge: 0.6,
                 microBevelAngle: 25
             },
             edc: {
-                bladeLength: 80,
+                bladeLength: 40,
                 bevelLength: 12,
                 thickness: 2.5,
                 edge: 0.4,
@@ -370,6 +681,16 @@
             document.getElementById('edge').addEventListener('input', calculateAll);
             document.getElementById('microBevelAngle').addEventListener('input', calculateAll);
             
+            // Добавляем поддержку touch-событий для мобильных
+            if ('ontouchstart' in window) {
+                // Оптимизация для touch-устройств
+                document.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('touchstart', function(e) {
+                        e.stopPropagation();
+                    });
+                });
+            }
+            
             // Первоначальный расчёт
             calculateAll();
         }
@@ -385,17 +706,22 @@
             document.getElementById('edge').value = preset.edge;
             document.getElementById('microBevelAngle').value = preset.microBevelAngle;
             
-            document.getElementById('bladeLength').dispatchEvent(new Event('input'));
+            calculateAll();
+            
+            // Плавная прокрутка к результатам на мобильных
+            if (window.innerWidth <= 767) {
+                document.querySelector('.results').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         }
         
         // ========== ОСНОВНОЙ РАСЧЁТ ==========
         function calculateAll() {
             // Получаем значения
-            bladeLength = parseFloat(document.getElementById('bladeLength').value);
-            bevelLength = parseFloat(document.getElementById('bevelLength').value);
-            const thickness = parseFloat(document.getElementById('thickness').value);
-            const edge = parseFloat(document.getElementById('edge').value);
-            const microBevelAngle = parseFloat(document.getElementById('microBevelAngle').value);
+            bladeLength = parseFloat(document.getElementById('bladeLength').value) || 100;
+            bevelLength = parseFloat(document.getElementById('bevelLength').value) || 15;
+            const thickness = parseFloat(document.getElementById('thickness').value) || 2;
+            const edge = parseFloat(document.getElementById('edge').value) || 0.3;
+            const microBevelAngle = parseFloat(document.getElementById('microBevelAngle').value) || 20;
             
             // Проверка корректности
             if (bevelLength > bladeLength) {
@@ -426,6 +752,11 @@
             document.getElementById('bladeLengthDisplay').textContent = bladeLength;
             document.getElementById('bevelLengthDisplay').textContent = bevelLength;
             document.getElementById('bevelPercent').textContent = bladeRatio;
+            
+            // Мобильная статистика
+            document.getElementById('mobileAlpha').textContent = alpha.toFixed(2) + '°';
+            document.getElementById('mobileBeta').textContent = microBevelAngle.toFixed(1) + '°';
+            document.getElementById('mobileHeight').textContent = height.toFixed(2) + ' мм';
             
             // Визуализация
             drawProfile(thickness, edge, alpha, microBevelAngle);
@@ -524,28 +855,27 @@
             
             // Подписи размеров
             ctx.fillStyle = '#333';
-            ctx.font = 'bold 12px Arial';
+            ctx.font = 'bold 10px Arial';
             ctx.textAlign = 'center';
             
-            // ширина спуска
+            // Ширина спуска
             ctx.save();
-            ctx.translate(bevelPoints[0].x - 30, (bevelPoints[0].y + bevelPoints[3].y) / 2);
+            ctx.translate(bevelPoints[0].x - 25, (bevelPoints[0].y + bevelPoints[3].y) / 2);
             ctx.rotate(-Math.PI / 2);
             ctx.fillText(`${bevelLength} мм`, 0, 0);
             ctx.restore();
             
-            // ширина обуха
-            ctx.save();
-            ctx.translate(bevelPoints[0].x - 30, (bevelPoints[0].y + bevelPoints[0].y - spineHeight) / 2);
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText(`${spineLength} мм`, 0, 0);
-            ctx.restore();
+            // Ширина обуха
+            if (spineLength > 0) {
+                ctx.save();
+                ctx.translate(bevelPoints[0].x - 25, (bevelPoints[0].y + bevelPoints[0].y - spineHeight) / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText(`${spineLength.toFixed(1)} мм`, 0, 0);
+                ctx.restore();
+            }
             
             // Толщина обуха
             ctx.fillText(`${thickness.toFixed(1)} мм`, centerX, bevelPoints[0].y - spineHeight - 10);
-            
-            // Общая ширина
-            ctx.fillText(`Общая ширина: ${bladeLength} мм`, centerX, canvas.height - 10);
             
             // Разделительная линия (обух/спуск)
             ctx.strokeStyle = '#666';
@@ -559,12 +889,12 @@
             
             // Подпись разделителя
             ctx.fillStyle = '#666';
-            ctx.font = '10px Arial';
+            ctx.font = '9px Arial';
             ctx.fillText('начало спуска', centerX, bevelPoints[0].y - 5);
         }
         
         function drawAngle(point1, point2, angle, color, label) {
-            const radius = 35;
+            const radius = 25;
             const centerX = point2.x;
             const centerY = point2.y;
             
