@@ -9,7 +9,7 @@
 - Автоматический пересчёт при изменении параметров
 
 ## Как использовать
-1. Откройте [ссылку на GitHub Pages] https://volkovhl.github.io/knife-calculator/
+1.  [Смотреть]((https://volkovhl.github.io/knife-calculator/))
 2. Введите параметры клинка
 3. Получите готовый расчёт и визуализацию
 
