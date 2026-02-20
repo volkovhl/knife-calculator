@@ -12,7 +12,7 @@
 1.  [Смотреть](https://volkovhl.github.io/knife-calculator/)
 2. Введите параметры клинка
 3. Получите готовый расчёт и визуализацию
-4. Скачайте файл [index.html](https://github.com/volkovhl.github.io/knife-calculator/archive/refs/heads/main.zip)
+4. Скачайте файл [index.html](https://github.com/volkovhl/knife-calculator/archive/refs/heads/main.zip)  
 ## Технологии
 - HTML5
 - CSS3
