@@ -499,7 +499,7 @@
                 </div>
                 
                 <div class="input-group">
-                    <label>Ширина спуска до обуха (B):</label>
+                    <label>Ширина спуска (B):</label>
                     <div class="unit">
                         <input type="number" id="bevelLength" value="15" min="5" max="100" step="0.5" inputmode="decimal">
                         <span>мм</span>
@@ -861,7 +861,7 @@
             
             // Подписи размеров
             ctx.fillStyle = '#333';
-            ctx.font = 'bold 10px Arial';
+            ctx.font = 'bold 18px Arial';
             ctx.textAlign = 'center';
             
             // Ширина спуска (слева)
@@ -895,12 +895,12 @@
             
             // Подпись разделителя
             ctx.fillStyle = '#666';
-            ctx.font = '9px Arial';
-            ctx.fillText('начало спуска', centerX, bevelPoints[0].y - 5);
+            ctx.font = '12px Arial';
+            ctx.fillText('начало спуска', centerX + 90, bevelPoints[0].y - 5);
             
             // Отображение угла α слева
             ctx.fillStyle = '#ff5722';
-            ctx.font = 'bold 14px Arial';
+            ctx.font = 'bold 30px Arial';
             ctx.textAlign = 'left';
             ctx.fillText(`α = ${alpha.toFixed(1)}°`, 20, 40);
         }
