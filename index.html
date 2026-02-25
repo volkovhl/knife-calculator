@@ -493,13 +493,13 @@
                 <div class="input-group">
                     <label>Общая ширина клинка (L):</label>
                     <div class="unit">
-                        <input type="number" id="bladeLength" value="100" min="30" max="300" step="1" inputmode="numeric">
+                        <input type="number" id="bladeLength" value="50" min="30" max="300" step="1" inputmode="numeric">
                         <span>мм</span>
                     </div>
                 </div>
                 
                 <div class="input-group">
-                    <label>Ширина спуска до обуха (B):</label>
+                    <label>Ширина спуска от обуха (B):</label>
                     <div class="unit">
                         <input type="number" id="bevelLength" value="15" min="5" max="100" step="0.5" inputmode="decimal">
                         <span>мм</span>
@@ -510,7 +510,7 @@
                 <div class="input-group">
                     <label>Толщина обуха (T):</label>
                     <div class="unit">
-                        <input type="number" id="thickness" value="2.0" min="0.5" max="10" step="0.1" inputmode="decimal">
+                        <input type="number" id="thickness" value="7" min="0.5" max="10" step="0.1" inputmode="decimal">
                         <span>мм</span>
                     </div>
                 </div>
@@ -570,7 +570,7 @@
                         <tr>
                             <td>Основной угол спуска (α)</td>
                             <td><span id="alphaValue">3.24</span>°</td>
-                            <td>Угол одной стороны спуска</td>
+                            <td>Угол спуска на одну сторону</td>
                         </tr>
                         <tr>
                             <td>Фактическая ширина спуска</td>
@@ -617,16 +617,16 @@
                     <span>Основной спуск</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background:#ff5722;"></div>
-                    <span>Угол α</span>
-                </div>
-                <div class="legend-item">
                     <div class="legend-color" style="background:#2196F3;"></div>
                     <span>Подводы β</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background:#4CAF50;"></div>
                     <span>Обух</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#999; width:2px; height:20px;"></div>
+                    <span>Ось симметрии</span>
                 </div>
             </div>
             
@@ -849,23 +849,29 @@
             ctx.closePath();
             ctx.fill();
             
-            // Углы α (оранжевые дуги)
-            drawAngle(bevelPoints[0], bevelPoints[3], alpha, '#ff5722', 'α');
-            drawAngle(bevelPoints[1], bevelPoints[2], alpha, '#ff5722', '');
+            // Вертикальная осевая линия
+            ctx.beginPath();
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 3]); // Пунктирная линия
+            ctx.moveTo(centerX, baseY - bevelLength * adaptiveScale - spineHeight);
+            ctx.lineTo(centerX, baseY);
+            ctx.stroke();
+            ctx.setLineDash([]); // Сбрасываем пунктир
             
             // Подписи размеров
             ctx.fillStyle = '#333';
             ctx.font = 'bold 10px Arial';
             ctx.textAlign = 'center';
             
-            // Ширина спуска
+            // Ширина спуска (слева)
             ctx.save();
             ctx.translate(bevelPoints[0].x - 25, (bevelPoints[0].y + bevelPoints[3].y) / 2);
             ctx.rotate(-Math.PI / 2);
             ctx.fillText(`${bevelLength} мм`, 0, 0);
             ctx.restore();
             
-            // Ширина обуха
+            // Ширина обуха (слева)
             if (spineLength > 0) {
                 ctx.save();
                 ctx.translate(bevelPoints[0].x - 25, (bevelPoints[0].y + bevelPoints[0].y - spineHeight) / 2);
@@ -891,37 +897,12 @@
             ctx.fillStyle = '#666';
             ctx.font = '9px Arial';
             ctx.fillText('начало спуска', centerX, bevelPoints[0].y - 5);
-        }
-        
-        function drawAngle(point1, point2, angle, color, label) {
-            const radius = 25;
-            const centerX = point2.x;
-            const centerY = point2.y;
             
-            // Вычисляем начальный угол
-            const dx = point1.x - point2.x;
-            const dy = point1.y - point2.y;
-            const startAngle = Math.atan2(dy, dx);
-            
-            // Дуга
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, startAngle, startAngle + angle * Math.PI / 180);
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            
-            // Подпись
-            if (label) {
-                const midAngle = startAngle + (angle * Math.PI / 180) / 2;
-                const labelX = centerX + (radius + 15) * Math.cos(midAngle);
-                const labelY = centerY + (radius + 15) * Math.sin(midAngle);
-                
-                ctx.fillStyle = color;
-                ctx.font = 'bold 14px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(`${label} = ${angle.toFixed(1)}°`, labelX, labelY);
-            }
+            // Отображение угла α слева
+            ctx.fillStyle = '#ff5722';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText(`α = ${alpha.toFixed(1)}°`, 20, 40);
         }
         
         // ========== УПРАВЛЕНИЕ ==========
