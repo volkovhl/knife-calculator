@@ -585,9 +585,13 @@
                     </tbody>
                 </table>
                 
-                <div class="angle-display">
-                    α = <span id="alphaDisplay">3.24</span>°
-                </div>
+                    <div class="angle-display">
+                   α = <span id="alphaDisplay">3.24</span>°
+                  <div style="font-size: 16px; color: #666; margin-top: 4px;">
+                    (<span id="alphaDMS">3°14′</span>)
+                  </div>
+                 </div>
+                
                 <div style="text-align:center; color:#2196F3; font-size:clamp(16px,4vw,20px); font-weight:bold;">
                     β = <span id="betaDisplay">20.0</span>° (подводы)
                 </div>
@@ -668,8 +672,14 @@
                 microBevelAngle: 22
             }
         };
-        
-        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+		
+		    // Функция для преобразования в градусы и минуты
+              function formatDMS(angle) {
+                 const deg = Math.floor(angle);
+                 const minutes = Math.round((angle - deg) * 60);
+                 return `${deg}°${minutes}′`;
+        }
+             // ========== ИНИЦИАЛИЗАЦИЯ ==========
         function init() {
             canvas = document.getElementById('profileCanvas');
             ctx = canvas.getContext('2d');
@@ -692,11 +702,12 @@
             }
             
             // Первоначальный расчёт
-            calculateAll();
+        calculateAll();
         }
         
         // ========== ЗАГРУЗКА ПРЕСЕТА ==========
-        function loadPreset(presetName) {
+                
+		function loadPreset(presetName) {
             const preset = presets[presetName];
             if (!preset) return;
             
@@ -758,6 +769,8 @@
             document.getElementById('mobileBeta').textContent = microBevelAngle.toFixed(1) + '°';
             document.getElementById('mobileHeight').textContent = height.toFixed(2) + ' мм';
             
+            // Обновляем отображение в градусах и минутах
+    document.getElementById('alphaDMS').textContent = formatDMS(alpha);
             // Визуализация
             drawProfile(thickness, edge, alpha, microBevelAngle);
         }
@@ -898,11 +911,16 @@
             ctx.font = '12px Arial';
             ctx.fillText('начало спуска', centerX + 90, bevelPoints[0].y - 5);
             
-            // Отображение угла α слева
-            ctx.fillStyle = '#ff5722';
-            ctx.font = 'bold 30px Arial';
-            ctx.textAlign = 'left';
-            ctx.fillText(`α = ${alpha.toFixed(1)}°`, 20, 40);
+            // Отображение угла α слева (в градусах и минутах)
+ctx.fillStyle = '#ff5722';
+ctx.font = 'bold 30px Arial';
+ctx.textAlign = 'left';
+ctx.fillText(`α = ${alpha.toFixed(1)}°`, 20, 40);
+
+// Добавляем градусы и минуты под основным углом
+ctx.font = 'bold 18px Arial';
+ctx.fillStyle = '#666';
+ctx.fillText(`(${formatDMS(alpha)})`, 20, 65);
         }
         
         // ========== УПРАВЛЕНИЕ ==========
