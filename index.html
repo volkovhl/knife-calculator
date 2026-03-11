@@ -424,21 +424,27 @@
         /* Стиль для кнопки YouTube */
         /* Стиль для кнопки YouTube - МИНИМАЛЬНАЯ ВЕРСИЯ */
         .youtube-button {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 4px;
-            background: #ff0000;
+            gap: 10px;
+            padding: 12px 22px;
+
+            background: linear-gradient(135deg, #ff0000, #cc0000);
             color: white;
-            padding: 4px 10px;
-            border-radius: 15px;
             text-decoration: none;
-            font-weight: bold;
-            font-size: 11px;
-            margin-top: 5px;
-            box-shadow: 0 2px 4px rgba(255, 0, 0, 0.2);
-            transition: transform 0.2s;
-            border: 1px solid white;
-            cursor: pointer;
+
+            font-size: 16px;
+            font-weight: 600;
+
+            border-radius: 30px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+
+            transition: all 0.3s ease;
+        }
+
+        .youtube-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
         }
 
         .youtube-emoji {
@@ -669,9 +675,10 @@
                 <div class="button-container">
                     <a href="https://www.youtube.com/watch?v=hNq_J7gQe2w" target="_blank" rel="noopener noreferrer"
                         class="youtube-button">
-                        <span class="youtube-emoji"></span>
-                        <span></span>
-                        <span class="youtube-emoji">▶️</span>
+
+                        <span class="youtube-icon">▶</span>
+                        <span class="youtube-text">YouTube</span>
+
                     </a>
                 </div>
             </div>
@@ -698,7 +705,8 @@
             <div style="margin-top:15px; text-align:center; font-size:14px;">
                 <p><strong>Масштаб:</strong> 1 пиксель = <span id="scaleValue">0.13</span> мм</p>
                 <p><strong>Ширина клинка:</strong> <span id="bladeLengthDisplay">100</span> мм | <strong>Спуск:</strong>
-                    <span id="bevelLengthDisplay">15</span> мм (<span id="bevelPercent">15.0</span>%)</p>
+                    <span id="bevelLengthDisplay">15</span> мм (<span id="bevelPercent">15.0</span>%)
+                </p>
             </div>
         </div>
     </div>
